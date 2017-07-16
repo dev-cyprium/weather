@@ -6,7 +6,9 @@ defmodule Weather.CLI do
 	weather data for a location
 	"""
 	def main(argv) do
-		parse_args(argv)
+		argv 
+			|> parse_args
+			|> process
 	end
 	
 	@doc """
@@ -28,5 +30,20 @@ defmodule Weather.CLI do
 			{ _, [ location ], _ }   -> { location }
 			_ -> :help
 		end
+	end
+	
+	@doc """
+	process either takes a :help atom or a touple containing the location
+	and returns the location data from the server
+	"""
+	def process({ location }) do
+		Weather.WeatherXML.fetch(location)
+	end
+	
+	def process(:help) do
+		IO.puts """
+		usage: weather <location>
+		"""
+		System.halt(0)
 	end
 end
